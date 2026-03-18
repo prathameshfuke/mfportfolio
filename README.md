@@ -48,6 +48,70 @@ Backend
 4. Analytics module for XIRR, overlap, expense drag, health scoring
 5. Advisor module for LLM output generation (Gemini/Anthropic)
 
+## Flowcharts
+
+### End-to-End User Journey
+
+```mermaid
+flowchart TD
+	A[Open Web App] --> B[Upload CAMS/KFintech PDF]
+	B --> C[Pick Risk Profile]
+	C --> D{Provide API Key?}
+	D -->|Yes| E[Attach Provider + Key]
+	D -->|No| F[Use Server-Side or Fallback Path]
+	E --> G[Send /analyze Request]
+	F --> G
+	G --> H[Backend Parses and Enriches Data]
+	H --> I[Compute XIRR Overlap TER Health Score]
+	I --> J[Generate AI Rebalancing Plan]
+	J --> K[Render Dashboard + Insights]
+```
+
+### Backend Processing Pipeline
+
+```mermaid
+flowchart LR
+	A[PDF Statement] --> B[Parser]
+	B --> C[Structured Funds + Transactions]
+	C --> D[Enrichment Layer]
+	D --> E[Analytics Engine]
+	E --> F[Advisor Engine]
+	F --> G[Unified JSON Response]
+
+	D --> D1[Scheme Match]
+	D --> D2[NAV Metadata]
+	D --> D3[Benchmark Series]
+
+	E --> E1[Fund XIRR]
+	E --> E2[Portfolio XIRR]
+	E --> E3[Overlap Matrix]
+	E --> E4[Expense Drag]
+	E --> E5[Health Score]
+```
+
+### Resilience and Fallback Logic
+
+```mermaid
+flowchart TD
+	A[/analyze Request] --> B[Parse PDF]
+	B --> C{Parse Success?}
+	C -->|No| Z[Return HTTP 400 with reason]
+	C -->|Yes| D[Enrich External Data]
+	D --> E{Provider Errors?}
+	E -->|Yes| F[Retry with Backoff]
+	F --> G{Still Failing?}
+	G -->|Yes| H[Return Partial Results + issues[]]
+	G -->|No| I[Continue]
+	E -->|No| I
+	I --> J[Compute Metrics]
+	J --> K[Generate AI Plan]
+	K --> L{AI Available?}
+	L -->|No| M[Set rebalancing_plan = null + issue]
+	L -->|Yes| N[Attach Plan]
+	M --> O[Return Stable Response]
+	N --> O
+```
+
 Flow
 
 1. Upload PDF
@@ -162,15 +226,6 @@ Expense Drag Panel
 1. Do not commit real keys.
 2. Use .env locally and keep only .env.example in source control.
 3. Rotate keys immediately if exposed.
-
-## Deployment Notes
-
-Recommended split:
-
-1. Frontend on Vercel
-2. Backend on Render
-
-Set backend URL in frontend env and configure allowed CORS origins in backend.
 
 ## Disclaimer
 
