@@ -93,20 +93,20 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-	A[/analyze Request] --> B[Parse PDF]
+	A[Analyze Request] --> B[Parse PDF]
 	B --> C{Parse Success?}
 	C -->|No| Z[Return HTTP 400 with reason]
 	C -->|Yes| D[Enrich External Data]
 	D --> E{Provider Errors?}
 	E -->|Yes| F[Retry with Backoff]
 	F --> G{Still Failing?}
-	G -->|Yes| H[Return Partial Results + issues[]]
+	G -->|Yes| H[Return Partial Results with issues list]
 	G -->|No| I[Continue]
 	E -->|No| I
 	I --> J[Compute Metrics]
 	J --> K[Generate AI Plan]
 	K --> L{AI Available?}
-	L -->|No| M[Set rebalancing_plan = null + issue]
+	L -->|No| M[Set plan to null and add issue]
 	L -->|Yes| N[Attach Plan]
 	M --> O[Return Stable Response]
 	N --> O
