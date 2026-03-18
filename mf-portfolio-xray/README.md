@@ -84,6 +84,39 @@ npm run dev
 
 Frontend runs at `http://localhost:5173`.
 
+## Deploy on Vercel (Single Project)
+
+This repo is configured to run both frontend and backend on Vercel in one deployment using:
+
+1. Static build for `frontend`
+2. Python serverless function for `api/index.py` (which serves FastAPI from `backend/main.py`)
+
+### Required Vercel Settings
+
+1. Import project folder: `mf-portfolio-xray`
+2. Root Directory: `mf-portfolio-xray`
+3. Build command: leave default (uses `vercel.json`)
+4. Output directory: leave default (uses `vercel.json`)
+
+If Root Directory is set incorrectly (for example workspace root), Vercel will show `404: NOT_FOUND`.
+
+### Environment Variables in Vercel
+
+Set at least one of:
+
+1. `GEMINI_API_KEY`
+2. `ANTHROPIC_API_KEY`
+
+Optional:
+
+1. `VITE_API_URL` (default already points to `/api`)
+
+### Route Behavior
+
+1. Frontend SPA is served from `/`
+2. Backend API is served from `/api/*`
+3. Analyze endpoint becomes `/api/analyze`
+
 ## Environment Variables
 
 Create `backend/.env` from `backend/.env.example`.

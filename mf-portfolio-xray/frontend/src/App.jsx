@@ -9,7 +9,7 @@ const PortfolioSnapshot = lazy(() => import('./components/PortfolioSnapshot'))
 const RebalancingPlan = lazy(() => import('./components/RebalancingPlan'))
 const XirrChart = lazy(() => import('./components/XirrChart'))
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 const steps = ['Parsing PDF...', 'Computing XIRR...', 'Enriching fund data...', 'Building advisor output...']
 
